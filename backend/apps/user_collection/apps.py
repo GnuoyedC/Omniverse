@@ -3,4 +3,4 @@ from django.apps import AppConfig
 
 class UserCollectionConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "user_collection"
+    name = "backend.apps.user_collection"
