@@ -32,7 +32,7 @@ SECRET_KEY = CONFIG["SECRET_KEY"]
 # REF: https://developer.marvel.com/documentation/authorization
 # REF: https://developer.marvel.com/docs
 MARVEL_KEY = CONFIG["MARVEL_PUB"]
-print(MARVEL_KEY)
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -48,6 +48,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "backend.apps.omni_catalog.apps.OmniCatalogConfig",
+    "backend.apps.omni_market.apps.OmniMarketConfig",
+    "backend.apps.user_auth.apps.UserAuthConfig",
+    "backend.apps.user_collection.UserCollectionConfig"
 ]
 
 MIDDLEWARE = [
@@ -87,14 +93,13 @@ WSGI_APPLICATION = "omniverse_drf.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": BASE_DIR / "omniverse_db.sqlite3",
     }
 }
 
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -110,7 +115,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+# REST framework authentication, etc.
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
