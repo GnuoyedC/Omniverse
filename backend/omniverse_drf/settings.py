@@ -15,15 +15,24 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 ENV_PATH = BASE_DIR / ".env"
+
 # config file
 CONFIG = dotenv_values(ENV_PATH)
-print(CONFIG['SECRET_KEY'])
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = CONFIG["SECRET_KEY"]
 
+# All calls to the Marvel Comics API must pass your public key via an “apikey”
+# parameter. Client-side and server-side applications have slightly different
+# authentication rules in order to access the API. Please read below for the
+# appropriate method for your application.
+# REF: https://developer.marvel.com/documentation/authorization
+# REF: https://developer.marvel.com/docs
+MARVEL_KEY = CONFIG["MARVEL_PUB"]
+print(MARVEL_KEY)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
