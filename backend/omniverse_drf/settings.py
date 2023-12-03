@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     "backend.apps.omni_catalog.apps.OmniCatalogConfig",
     "backend.apps.omni_market.apps.OmniMarketConfig",
     "backend.apps.user_auth.apps.UserAuthConfig",
-    "backend.apps.user_collection.UserCollectionConfig",
+    "backend.apps.user_collection.apps.UserCollectionConfig",
 ]
 
 MIDDLEWARE = [
