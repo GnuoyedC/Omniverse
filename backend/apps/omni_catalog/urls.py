@@ -4,5 +4,5 @@ from . import views
 app_name = 'omni_catalog'
 
 urlpatterns = [
-    path('catalog/', views.feature_view, name='feature'),
+    # path('catalog/', views.omni_catalog, name='catalog'),
 ]

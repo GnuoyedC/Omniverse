@@ -17,23 +17,29 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 ENV_PATH = BASE_DIR / ".env"
+ENVDB_PATH = BASE_DIR / ".env.db"
+ENVMARVELAPI_PATH = BASE_DIR / ".env.marvelapi"
 
-# config file
+# base configurations.
 CONFIG = dotenv_values(ENV_PATH)
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = CONFIG["SECRET_KEY"]
 
+# database configurations.
+DBCONFIG = dotenv_values(ENVDB_PATH)
+
+# Marvel API configurations
 # All calls to the Marvel Comics API must pass your public key via an “apikey”
 # parameter. Client-side and server-side applications have slightly different
 # authentication rules in order to access the API. Please read below for the
 # appropriate method for your application.
 # REF: https://developer.marvel.com/documentation/authorization
-# REF: https://developer.marvel.com/docs
-MARVEL_KEY = CONFIG["MARVEL_PUB"]
+# REF2: https://developer.marvel.com/docs
+MARVELCONFIG = dotenv_values(ENVMARVELAPI_PATH)
+MARVEL_API_KEY = MARVELCONFIG["PUBLIC_KEY"]
+MARVEL_API_ENDPOINT = MARVELCONFIG["ENDPOINT_URL"]
+
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -50,16 +56,17 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "corsheaders",
     "rest_framework",
     "rest_framework_simplejwt",
-    "corsheaders",
-    "backend.apps.omni_catalog.apps.OmniCatalogConfig",
-    "backend.apps.omni_market.apps.OmniMarketConfig",
-    "backend.apps.user_auth.apps.UserAuthConfig",
-    "backend.apps.user_collection.apps.UserCollectionConfig",
+    "apps.omni_catalog.apps.OmniCatalogConfig",
+    "apps.omni_market.apps.OmniMarketConfig",
+    "apps.user_auth.apps.UserAuthConfig",
+    "apps.user_collection.apps.UserCollectionConfig",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware", # added 2023-12-04 @ 1:37 PM EST
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -95,8 +102,12 @@ WSGI_APPLICATION = "omniverse_drf.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "omniverse_db.sqlite3",
+        "ENGINE": DBCONFIG['DB_ENGN'], # added: 2023-12-04 @ 10:00 AM EST
+        "NAME": BASE_DIR / DBCONFIG['DB_FILE'], # added: 2023-12-04 @ 9:59 AM EST
+        "USER": DBCONFIG['DB_USER'], # added: 2023-12-04 @ 9:54 AM EST
+        "PASSWORD": DBCONFIG['DB_PASS'], # added: 2023-12-04 @ 9:54 AM EST
+        "HOST": DBCONFIG['DB_HOST'], # added: 2023-12-04 @ 9:55 AM EST
+        "PORT": DBCONFIG['DB_PORT'] # added: 2023-12-04 @ 9:55 AM EST
     }
 }
 
@@ -118,12 +129,20 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# django-simplejwt settings.
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': False,
+}
+
 # REST framework authentication, etc.
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -145,10 +164,3 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-# django-simplejwt settings.
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS': False,
-}

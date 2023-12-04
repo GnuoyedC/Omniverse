@@ -4,5 +4,5 @@ from . import views
 app_name = 'omni_market'
 
 urlpatterns = [
-    path('market/', views.feature_view, name='feature'),
+    # path('market/', views.omni_market, name='market'),
 ]

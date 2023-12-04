@@ -4,5 +4,5 @@ from . import views
 app_name = 'user_auth'
 
 urlpatterns = [
-    path('auth/', views.feature_view, name='feature'),
+    # path('auth/', views.user_auth, name='auth'),
 ]

@@ -3,4 +3,4 @@ from django.apps import AppConfig
 
 class UserAuthConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "backend.apps.user_auth"
+    name = "apps.user_auth"
