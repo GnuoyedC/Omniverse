@@ -20,25 +20,26 @@ ENV_PATH = BASE_DIR / ".env"
 ENVDB_PATH = BASE_DIR / ".env.db"
 ENVMARVELAPI_PATH = BASE_DIR / ".env.marvelapi"
 
-# config files
+# base configurations.
 CONFIG = dotenv_values(ENV_PATH)
-DBCONFIG = dotenv_values(ENVDB_PATH)
-MARVELCONFIG = dotenv_values(ENVMARVELAPI_PATH)
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = CONFIG["SECRET_KEY"]
 
+# database configurations.
+DBCONFIG = dotenv_values(ENVDB_PATH)
+
+# Marvel API configurations
 # All calls to the Marvel Comics API must pass your public key via an “apikey”
 # parameter. Client-side and server-side applications have slightly different
 # authentication rules in order to access the API. Please read below for the
 # appropriate method for your application.
 # REF: https://developer.marvel.com/documentation/authorization
 # REF2: https://developer.marvel.com/docs
+MARVELCONFIG = dotenv_values(ENVMARVELAPI_PATH)
 MARVEL_API_KEY = MARVELCONFIG["PUBLIC_KEY"]
+MARVEL_API_ENDPOINT = MARVELCONFIG["ENDPOINT_URL"]
+
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
