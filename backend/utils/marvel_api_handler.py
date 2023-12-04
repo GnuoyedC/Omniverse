@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict,Any
 from django.conf import settings
 from utils.exceptions.marvel_api_exceptions import (
     NoOmnibusIDProvidedException)
@@ -12,7 +12,7 @@ from utils.exceptions.marvel_api_exceptions import (
 class MarvelAPI:
     endpoint_url = settings.MARVEL_API_ENDPOINT
     api_key = settings.MARVEL_API_KEY
-
+    omni_dict = {}
     @classmethod
     def get_omnibus_by_id(cls,id) -> Dict:
         if id is None:
@@ -21,5 +21,6 @@ class MarvelAPI:
         return {}
 
     @classmethod
-    def get_all_omnibuses(cls) -> Dict:
+    def get_all_omnibuses(cls) -> Dict[str,Any]:
+
         return {}
