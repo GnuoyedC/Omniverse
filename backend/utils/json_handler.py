@@ -8,7 +8,22 @@ from exceptions.json_handler_exceptions import (
 class JsonHandler:
     headers = {'Content-Type': 'application/json'}
     @classmethod
-    def get_json(cls,url) -> Dict[str,Any]:
+    def get_json(cls,url:str) -> Dict[str,Any]:
+        """
+        A function that makes a request to a passed
+        URL to retrieve JSON.
+
+        Args:
+            url (str): URL string.
+
+        Raises:
+            JsonHandlerNoUrlProvided: thrown if no URL is provided.
+            JsonHandlerRequestException: thrown if anything is wrong with
+            the HTTP request.
+
+        Returns:
+            Dict[str,Any]: JSON response dict (string)
+        """
         if url is None:
             raise JsonHandlerNoUrlProvided()
         try:
