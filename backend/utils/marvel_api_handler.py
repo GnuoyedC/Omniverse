@@ -2,6 +2,7 @@ from typing import Dict,Any
 from django.conf import settings
 from utils.exceptions.marvel_api_exceptions import (
     NoOmnibusIDProvidedException)
+from utils.json_handler import JsonHandler
 
 # All calls to the Marvel Comics API must pass your public key via an “apikey”
 # parameter. Client-side and server-side applications have slightly different
