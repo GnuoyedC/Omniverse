@@ -13,6 +13,9 @@ from datetime import timedelta # for the simple_jwt dict
 
 from dotenv import dotenv_values
 from pathlib import Path
+from utils.hashify import Hashify
+from utils.marvel_api_handler import MarvelAPI
+from time import time
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,6 +41,7 @@ MARVELCONFIG = dotenv_values(ENVMARVELAPI_PATH)
 MARVEL_API_KEY = MARVELCONFIG["PUBLIC_KEY"]
 MARVEL_PVT_KEY = MARVELCONFIG["PRIVATE_KEY"]
 MARVEL_API_ENDPOINT = MARVELCONFIG["ENDPOINT_URL"]
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 

@@ -22,7 +22,7 @@ class JsonHandler:
             the HTTP request.
 
         Returns:
-            Dict[str,Any]: JSON response dict (string)
+            Dict[str,Any]: JSON response
         """
         if url is None:
             raise JsonHandlerNoUrlProvided()

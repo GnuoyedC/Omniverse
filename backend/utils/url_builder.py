@@ -2,7 +2,7 @@ from urllib.parse import (
     urlencode,
     urlparse
 )
-from utils.exceptions.url_builder_exceptions import (
+from exceptions.url_builder_exceptions import (
     NoPathPassedToBuild,
     InvalidURLPassed
 )
