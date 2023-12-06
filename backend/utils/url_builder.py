@@ -10,7 +10,7 @@ from utils.exceptions.url_builder_exceptions import (
 class URLBuilder:
     def __init__(self,base_url:str):
         # Normalizes the URL by removing
-        # right slashes at the end.
+        # slashes at the end.
         self.base_url = base_url.rstrip('/')
         self.validate_url(self.base_url)
     def validate_url(self, url:str) -> None:
