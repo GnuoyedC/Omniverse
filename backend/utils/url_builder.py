@@ -1,10 +1,14 @@
 from urllib.parse import (
     urlencode,
-    urlparse
+    urlparse,
+    parse_qs
 )
 from exceptions.url_builder_exceptions import (
     NoPathPassedToBuild,
-    InvalidURLPassed
+    InvalidURLPassed,
+    NoURLPassedToParamUpdateFunction,
+    NoParamPassedToParamUpdateFunction,
+    NoValuePassedToParamUpdateFunction,
 )
 
 class URLBuilder:
@@ -13,6 +17,7 @@ class URLBuilder:
         # slashes at the end.
         self.base_url = base_url.rstrip('/')
         self.validate_url(self.base_url)
+
     def validate_url(self, url:str) -> None:
         """
         Validates a URL.
@@ -25,7 +30,32 @@ class URLBuilder:
         """
         parsed_url = urlparse(url)
         if not all([parsed_url.scheme,parsed_url.netloc]):
-            raise InvalidURLPassed()
+            raise InvalidURLPassed(url)
+
+    def update_params(self, url:str, param:str, value:str):
+        """
+        Updates specific parameters for a passed URL.
+
+        Args:
+            url (str): The passed encoded URL.
+            param (str): the parameter you want to modify.
+            value (str): the value for that parameter.
+
+        Returns:
+            str: Returns the encoded, modified URL with updated params.
+        """
+        if not url:
+            raise NoURLPassedToParamUpdateFunction()
+        if not param:
+            raise NoParamPassedToParamUpdateFunction()
+        if not value:
+            raise NoValuePassedToParamUpdateFunction()
+
+        parsed_url = urlparse(url)
+        query_params = parse_qs(parsed_url.query)
+        query_params[param] = value
+        query_string = urlencode(query_params,doseq=True)
+        return parsed_url._replace(query=query_string).geturl()
 
     def build(self,path:str,**params) -> str:
         """

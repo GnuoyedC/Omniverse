@@ -13,9 +13,6 @@ from datetime import timedelta # for the simple_jwt dict
 
 from dotenv import dotenv_values
 from pathlib import Path
-from utils.hashify import Hashify
-from utils.marvel_api_handler import MarvelAPI
-from time import time
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
