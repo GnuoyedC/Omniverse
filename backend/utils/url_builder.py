@@ -31,8 +31,8 @@ class URLBuilder:
         parsed_url = urlparse(url)
         if not all([parsed_url.scheme,parsed_url.netloc]):
             raise InvalidURLPassed(url)
-
-    def update_params(self, url:str, param:str, value:str):
+    @staticmethod
+    def update_params(url:str, param:str, value:str):
         """
         Updates specific parameters for a passed URL.
 

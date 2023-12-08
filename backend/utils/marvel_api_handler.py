@@ -1,6 +1,14 @@
 import sys
 import os
 import django
+from typing import Dict,Any
+from json_handler import JsonHandler as h_json
+from url_builder import URLBuilder as builder
+from time import time
+from hashify import Hashify
+from exceptions.marvel_api_exceptions import (
+    NoOmnibusIDProvidedException
+)
 
 # Add the path to the 'backend' directory to the Python path
 script_dir = os.path.dirname(os.path.realpath(__file__))  # Path to utils/
@@ -15,19 +23,6 @@ from django.conf import settings
 
 # Your existing imports and code
 # ...
-
-from typing import Dict,Any
-from exceptions.marvel_api_exceptions import (
-    NoOmnibusIDProvidedException
-)
-
-from url_builder import URLBuilder as builder
-from json_handler import JsonHandler as h_json
-from time import time
-from hashify import Hashify
-import os
-import django
-
 # Now you can use your utility function
 # All calls to the Marvel Comics API must pass your public key via an “apikey”
 # parameter. Client-side and server-side applications have slightly different
@@ -73,6 +68,7 @@ class MarvelAPI:
             tuple: urlbuilder, url
         """
         urlbuild = builder(cls.endpoint_url)
+
         hashish = cls.generate_hash()
         hash = hashish[0]
         ts = hashish[1]
@@ -93,8 +89,11 @@ class MarvelAPI:
 
     @classmethod
     def get_omnibus_all_count(cls) -> int:
-        url = builder(cls.endpoint_url)
-        return
+
+        urlbuild, url = cls.get_base_url_urlbuild()
+        _url = builder.update_params(url=url,param="limit",value="1")
+        print(_url, " is the url")
+        return h_json.get_json_from_url(url=_url)
 
     @classmethod
     def get_all_omnibuses(cls) -> Dict[str,Any]:
@@ -109,8 +108,8 @@ class MarvelAPI:
     def test(cls):
         urlbuild, url = cls.get_base_url_urlbuild()
 
-        f = urlbuild.update_params(url=url,param="limit",value="1")
+
         print(f)
         return
 if __name__ == "__main__":
-    MarvelAPI.test()
+    MarvelAPI.get_omnibus_all_count()
