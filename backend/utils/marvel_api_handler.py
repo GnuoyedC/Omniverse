@@ -34,7 +34,6 @@ from django.conf import settings
 
 class MarvelAPI:
     path = "comics"
-    # endpoint_url = settings.MARVEL_API_ENDPOINT
     api_key = settings.MARVEL_API_KEY
     pvt_key = settings.MARVEL_PVT_KEY
     endpoint_url = settings.MARVEL_API_ENDPOINT
@@ -88,7 +87,7 @@ class MarvelAPI:
         return
 
     @classmethod
-    def get_omnibus_all_count(cls) -> int:
+    def get_omnibus_all_count(cls) -> Dict[Any,str]:
 
         urlbuild, url = cls.get_base_url_urlbuild()
         _url = builder.update_params(url=url,param="limit",value="1")
@@ -104,12 +103,5 @@ class MarvelAPI:
             Dict[str,Any]: _description_
         """
         return {}
-    @classmethod
-    def test(cls):
-        urlbuild, url = cls.get_base_url_urlbuild()
-
-
-        print(f)
-        return
 if __name__ == "__main__":
-    MarvelAPI.get_omnibus_all_count()
+    print(MarvelAPI.get_omnibus_all_count())
