@@ -6,8 +6,14 @@ from json_handler import JsonHandler as h_json
 from url_builder import URLBuilder as builder
 from time import time
 from hashify import Hashify
+from utils.helpers import (
+    get_current_date,
+    get_current_date_time,
+    MAX_DATE
+)
 from exceptions.marvel_api_exceptions import (
-    NoOmnibusIDProvidedException
+    NoOmnibusIDProvidedException,
+    OmnibusCountIsZero
 )
 
 # Add the path to the 'backend' directory to the Python path
@@ -67,10 +73,8 @@ class MarvelAPI:
             tuple: urlbuilder, url
         """
         urlbuild = builder(cls.endpoint_url)
+        hash,ts = cls.generate_hash()
 
-        hashish = cls.generate_hash()
-        hash = hashish[0]
-        ts = hashish[1]
         cls.base_params['hash'] = hash
         cls.base_params['ts'] = ts
         url = urlbuild.build(cls.path,
@@ -84,18 +88,46 @@ class MarvelAPI:
 
     @classmethod
     def get_upcoming_omnibuses(cls) -> Dict[str,Any]:
+        """
+        Retrieves all future omnibus releases available.
+
+        Returns:
+
+        """
         return
 
     @classmethod
-    def get_omnibus_all_count(cls) -> Dict[Any,str]:
+    def get_omnibus_all_count(cls) -> int:
+        """
+        Retrieves the total count of all omnibuses
+        from the API.
 
+        Returns:
+            result (int): the total amount of omnibuses available.
+        """
         urlbuild, url = cls.get_base_url_urlbuild()
         _url = builder.update_params(url=url,param="limit",value="1")
-        print(_url, " is the url")
-        return h_json.get_json_from_url(url=_url)
+        result = h_json.get_json_from_url(url=_url)['data']['total']
+        return result
 
     @classmethod
     def get_all_omnibuses(cls) -> Dict[str,Any]:
+        if cls.get_omnibus_all_count() == 0:
+            raise OmnibusCountIsZero()
+
+        count_of_all_omnibuses = cls.get_omnibus_all_count()
+        first_omnibus = 0
+        last_omnibus = count_of_all_omnibuses
+        limit = offset_step = 100
+        urlbuild, url = cls.get_base_url_urlbuild()
+
+        for omnibus_offset in range(first_omnibus,
+                            last_omnibus,
+                            offset_step):
+            _url = builder.update_params(url=url,
+                                         param="offset",
+                                         value=f"{omnibus_offset}")
+            print(h_json.get_json_from_url(url=_url)['data'])
         """
         returns all omnibuses up to 100.
 
@@ -104,4 +136,4 @@ class MarvelAPI:
         """
         return {}
 if __name__ == "__main__":
-    print(MarvelAPI.get_omnibus_all_count())
+    print(MarvelAPI.get_all_omnibuses())
