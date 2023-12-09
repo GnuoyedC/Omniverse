@@ -1,7 +1,8 @@
 import requests
 import ssl
-ssl_context = ssl.create_default_context()
-ssl_context.set_ciphers('DEFAULT@SECLEVEL=1')  # Example to lower security level
+import ssl
+import requests
+
 from typing import Dict,Any
 from exceptions.json_handler_exceptions import (
     JsonHandlerNoUrlProvided,
@@ -37,8 +38,7 @@ class JsonHandler:
                     raise JsonHandlerRequestException(f"HTTP Request failed: {e}")
                 exceptions.json_handler_exceptions.JsonHandlerRequestException: HTTP Request failed: HTTPSConnectionPool(host='gateway.marvel.com', port=443): Max retries exceeded with url: /v1/public/comics?format=hardcover&formatType=collection&limit=1&offset=0&apikey=f486ef2e851f918aad939b5e20582e09&hash=c738cbf94af57bdb79a69827bc5300ec&ts=1702070673.908445 (Caused by SSLError(SSLError(1, '[SSL: WRONG_SIGNATURE_TYPE] wrong signature type (_ssl.c:1006)')))
             """
-            response = requests.get(url=url,headers=cls.headers,
-                                    verify=False)
+            response = requests.get(url=url,headers=cls.headers)
             response.raise_for_status() # Raises HTTPError for bad responses.
             return response.json()
         except requests.exceptions.RequestException as e:
