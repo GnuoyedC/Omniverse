@@ -1,4 +1,8 @@
 import requests
+import ssl
+import ssl
+import requests
+
 from typing import Dict,Any
 from exceptions.json_handler_exceptions import (
     JsonHandlerNoUrlProvided,
@@ -7,8 +11,9 @@ from exceptions.json_handler_exceptions import (
 
 class JsonHandler:
     headers = {'Content-Type': 'application/json'}
+
     @classmethod
-    def get_json(cls,url:str) -> Dict[str,Any]:
+    def get_json_from_url(cls,url:str) -> Dict[str,Any]:
         """
         A function that makes a request to a passed
         URL to retrieve JSON.
@@ -22,13 +27,20 @@ class JsonHandler:
             the HTTP request.
 
         Returns:
-            Dict[str,Any]: JSON response dict (string)
+            Dict[str,Any]: JSON response
         """
         if url is None:
             raise JsonHandlerNoUrlProvided()
         try:
-            response = requests.get(url,headers=cls.headers)
+            """
+            TODO: Fix the following:
+                File "/Users/andromeda/development/projects/Omniverse/backend/utils/json_handler.py", line 39, in get_json_from_url
+                    raise JsonHandlerRequestException(f"HTTP Request failed: {e}")
+                exceptions.json_handler_exceptions.JsonHandlerRequestException: HTTP Request failed: HTTPSConnectionPool(host='gateway.marvel.com', port=443): Max retries exceeded with url: /v1/public/comics?format=hardcover&formatType=collection&limit=1&offset=0&apikey=f486ef2e851f918aad939b5e20582e09&hash=c738cbf94af57bdb79a69827bc5300ec&ts=1702070673.908445 (Caused by SSLError(SSLError(1, '[SSL: WRONG_SIGNATURE_TYPE] wrong signature type (_ssl.c:1006)')))
+            """
+            response = requests.get(url=url,headers=cls.headers)
             response.raise_for_status() # Raises HTTPError for bad responses.
             return response.json()
         except requests.exceptions.RequestException as e:
             raise JsonHandlerRequestException(f"HTTP Request failed: {e}")
+
