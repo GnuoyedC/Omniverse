@@ -1,3 +1,5 @@
-from django.conf import settings
-import url_builder as builder
+from django_helper import setup_django
+settings = setup_django()
 class APIDBHandler:
+    @staticmethod
+    def
