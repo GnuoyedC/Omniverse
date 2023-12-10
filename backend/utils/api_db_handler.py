@@ -1,5 +1,9 @@
-from django_helper import setup_django
-settings = setup_django()
+from marvel_api_handler import MarvelAPI
+from apps.omni_catalog.models import Omnibus
+
 class APIDBHandler:
     @staticmethod
-    def
+    def test():
+        print(Omnibus)
+if __name__ == '__main__':
+    APIDBHandler.test()
