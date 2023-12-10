@@ -6,10 +6,10 @@ from json_handler import JsonHandler as h_json
 from url_builder import URLBuilder as builder
 from time import time
 from hashify import Hashify
-from utils.helpers import (
+from date_helpers import (
     get_current_date,
     get_current_date_time,
-    MAX_DATE
+    get_max_date
 )
 from exceptions.marvel_api_exceptions import (
     NoOmnibusIDProvidedException,
@@ -72,14 +72,16 @@ class MarvelAPI:
         Returns:
             tuple: urlbuilder, url
         """
+
         urlbuild = builder(cls.endpoint_url)
         hash,ts = cls.generate_hash()
-
-        cls.base_params['hash'] = hash
-        cls.base_params['ts'] = ts
+        _params = cls.base_params
+        _params['hash'] = hash
+        _params['ts'] = ts
         url = urlbuild.build(cls.path,
-                            **cls.base_params)
+                            **_params)
         return urlbuild, url
+
     @classmethod
     def get_omnibus_by_id(cls, id: str) -> Dict:
         if id is None:
@@ -94,6 +96,12 @@ class MarvelAPI:
         Returns:
 
         """
+        current_date = get_current_date()
+        urlbuild, url = cls.get_base_url_urlbuild()
+
+        _url = builder.update_params(url=url,param="dateRange",
+                                     value=f"{current_date},{get_max_date()}")
+        print(_url)
         return
 
     @classmethod
@@ -136,4 +144,4 @@ class MarvelAPI:
         """
         return {}
 if __name__ == "__main__":
-    print(MarvelAPI.get_all_omnibuses())
+    print(MarvelAPI.get_upcoming_omnibuses())
