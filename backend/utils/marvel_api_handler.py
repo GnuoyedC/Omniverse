@@ -1,6 +1,3 @@
-import sys
-import os
-import django
 from typing import Dict,Any
 from json_handler import JsonHandler as h_json
 from url_builder import URLBuilder as builder
@@ -15,21 +12,8 @@ from exceptions.marvel_api_exceptions import (
     NoOmnibusIDProvidedException,
     OmnibusCountIsZero
 )
-
-# Add the path to the 'backend' directory to the Python path
-script_dir = os.path.dirname(os.path.realpath(__file__))  # Path to utils/
-parent_dir = os.path.dirname(script_dir)  # Path to backend/
-sys.path.append(parent_dir)
-
-# Set up the Django environment
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'omniverse_drf.settings')
-django.setup()
-# Now you can import Django settings and other Django-related modules
-from django.conf import settings
-
-# Your existing imports and code
-# ...
-# Now you can use your utility function
+import django
+from django_helper import setup_django
 # All calls to the Marvel Comics API must pass your public key via an “apikey”
 # parameter. Client-side and server-side applications have slightly different
 # authentication rules in order to access the API. Please read below for the
@@ -37,12 +21,12 @@ from django.conf import settings
 # REF: https://developer.marvel.com/documentation/authorization
 # REF2: https://developer.marvel.com/docs
 # Example: https://gateway.marvel.com:443/v1/public/comics?format=hardcover&formatType=collection&limit=100&apikey=
-
+SETTINGS = setup_django()
 class MarvelAPI:
     path = "comics"
-    api_key = settings.MARVEL_API_KEY
-    pvt_key = settings.MARVEL_PVT_KEY
-    endpoint_url = settings.MARVEL_API_ENDPOINT
+    api_key = SETTINGS.MARVEL_API_KEY
+    pvt_key = SETTINGS.MARVEL_PVT_KEY
+    endpoint_url = SETTINGS.MARVEL_API_ENDPOINT
     base_params = {
         "format": "hardcover",
         "formatType": "collection",
@@ -101,8 +85,7 @@ class MarvelAPI:
 
         _url = builder.update_params(url=url,param="dateRange",
                                      value=f"{current_date},{get_max_date()}")
-        print(_url)
-        return
+        return _url
 
     @classmethod
     def get_omnibus_all_count(cls) -> int:
@@ -120,12 +103,18 @@ class MarvelAPI:
 
     @classmethod
     def get_all_omnibuses(cls) -> Dict[str,Any]:
-        if cls.get_omnibus_all_count() == 0:
+        """
+        retrieves all omnibuses from the Marvel API.
+
+        Returns:
+            Dict[str,Any]: _description_
+        """
+        omnibus_all_count = cls.get_omnibus_all_count()
+        if omnibus_all_count == 0:
             raise OmnibusCountIsZero()
 
-        count_of_all_omnibuses = cls.get_omnibus_all_count()
         first_omnibus = 0
-        last_omnibus = count_of_all_omnibuses
+        last_omnibus = omnibus_all_count
         limit = offset_step = 100
         urlbuild, url = cls.get_base_url_urlbuild()
 
@@ -136,12 +125,6 @@ class MarvelAPI:
                                          param="offset",
                                          value=f"{omnibus_offset}")
             print(h_json.get_json_from_url(url=_url)['data'])
-        """
-        returns all omnibuses up to 100.
-
-        Returns:
-            Dict[str,Any]: _description_
-        """
         return {}
 if __name__ == "__main__":
     print(MarvelAPI.get_upcoming_omnibuses())
