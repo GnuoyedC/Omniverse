@@ -109,6 +109,7 @@ class MarvelAPI:
         Returns:
             Dict[str,Any]: _description_
         """
+        result_list = []
         omnibus_all_count = cls.get_omnibus_all_count()
         if omnibus_all_count == 0:
             raise OmnibusCountIsZero()
@@ -124,7 +125,8 @@ class MarvelAPI:
             _url = builder.update_params(url=url,
                                          param="offset",
                                          value=f"{omnibus_offset}")
-            print(h_json.get_json_from_url(url=_url)['data'])
-        return {}
+            result_list.extend(h_json.get_json_from_url(url=_url)['data']['results'])
+
+        return result_list
 if __name__ == "__main__":
-    print(MarvelAPI.get_upcoming_omnibuses())
+    MarvelAPI.get_all_omnibuses()
