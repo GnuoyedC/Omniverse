@@ -5,7 +5,7 @@ DATEFMT = "%Y-%m-%d"
 TIMEFMT = "%H:%M:%S"
 
 # Constants
-def get_current_date():
+def get_current_date() -> str:
     """
     Gets today's date ONLY (ex: 2023-12-09)
 
@@ -15,7 +15,7 @@ def get_current_date():
 
     return datetime.today().strftime(DATEFMT)
 
-def get_current_date_time():
+def get_current_date_time() -> str:
     """
     Gets the date AND time in 24hr format
     (ex: 2023-12-09 17:45:40)
@@ -26,18 +26,36 @@ def get_current_date_time():
     """
     return datetime.today().strftime(f"{DATEFMT} {TIMEFMT}")
 
-def get_max_date():
+def get_future_date(years=2,month=12,day=31) -> str:
     """
-    Returns the max date (current year + 2, Dec 31st)
-    """
-    return (datetime.today() + relativedelta(years=2,
-                                             month=12,
-                                             day=31)).strftime(DATEFMT)
+    Retrieves a date in the future, by default
+    being the last day of that year, relative
+    to the current date.
 
-def get_year_end_date():
+    params:
+        years (int): n future years.
+        month (int): target month.
+        day (int): target day of target month.
+    Returns:
+        str: string representation of the future date.
+
     """
-    Returns the date of the last day of the current year.
+    relativedelta()
+    return (datetime.today() + relativedelta(years=years,
+                                             month=month,
+                                             day=day)).strftime(DATEFMT)
+
+def get_date_current_year(month=12,day=31) -> str:
+    """
+    Retrieves a date for the current year.
+
+    params:
+        month (int): the month number.
+        day (int): the day number (max 31)
+    Returns:
+        str: string representation of a date for the current year,
+        with the specified DATEFMT.
     """
 
-    return (datetime.today() + relativedelta(month=12,
-                                             day=31)).strftime(DATEFMT)
+    return (datetime.today() + relativedelta(month=month,
+                                             day=day)).strftime(DATEFMT)
