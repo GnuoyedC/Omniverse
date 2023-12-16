@@ -40,7 +40,7 @@ def get_future_date(years=2,month=12,day=31) -> str:
         str: string representation of the future date.
 
     """
-    relativedelta()
+
     return (datetime.today() + relativedelta(years=years,
                                              month=month,
                                              day=day)).strftime(DATEFMT)

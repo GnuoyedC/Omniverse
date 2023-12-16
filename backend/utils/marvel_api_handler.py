@@ -6,7 +6,7 @@ from hashify import Hashify
 from date_helpers import (
     get_current_date,
     get_current_date_time,
-    get_max_date
+    get_future_date
 )
 from exceptions.marvel_api_exceptions import (
     NoOmnibusIDProvidedException,
@@ -73,7 +73,7 @@ class MarvelAPI:
         return {}
 
     @classmethod
-    def get_upcoming_omnibuses(cls) -> Dict[str,Any]:
+    def get_upcoming_omnibuses(cls) -> str:
         """
         Retrieves all future omnibus releases available.
 
@@ -84,7 +84,7 @@ class MarvelAPI:
         urlbuild, url = cls.get_base_url_urlbuild()
 
         _url = builder.update_params(url=url,param="dateRange",
-                                     value=f"{current_date},{get_max_date()}")
+                                     value=f"{current_date},{get_future_date()}")
         return _url
 
     @classmethod
@@ -129,4 +129,5 @@ class MarvelAPI:
 
         return result_list
 if __name__ == "__main__":
-    MarvelAPI.get_all_omnibuses()
+    print(MarvelAPI.get_upcoming_omnibuses())
+    # print(MarvelAPI.get_all_omnibuses())

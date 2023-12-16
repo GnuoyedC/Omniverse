@@ -17,3 +17,12 @@ class JsonHandlerRequestException(Exception):
     def __init__(self, message="There was an issue with the request."):
         self.message = message
         super().__init__(message)
+
+class NotADictionaryException(Exception):
+    """
+    Exception raised if value passed is not a
+    valid dictionary.
+    """
+    def __init__(self,message="Not a valid dictionary"):
+        self.message = message
+        super().__init__(message)
