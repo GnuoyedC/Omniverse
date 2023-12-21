@@ -26,3 +26,13 @@ class NotADictionaryException(Exception):
     def __init__(self,message="Not a valid dictionary"):
         self.message = message
         super().__init__(message)
+class MaxRetriesException(Exception):
+    """
+    _summary_
+
+    Args:
+        Exception (_type_): _description_
+    """
+    def __init__(self,message="Max retries reached"):
+        self.message = message
+        super().__init__(message)

@@ -19,3 +19,14 @@ class OmnibusCountIsZero(Exception):
     def __init__(self, message="Omnibus count is 0."):
         self.message = message
         super().__init__(message)
+
+class DataCountIsZero(Exception):
+    """Exception raised if no data is available.
+
+    Attributes:
+        message -- indicates that no data are returned.
+    """
+
+    def __init__(self, message="Data count is 0."):
+        self.message = message
+        super().__init__(message)
