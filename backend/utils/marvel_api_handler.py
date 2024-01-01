@@ -38,6 +38,7 @@ class MarvelAPI:
         "offset": 0,
         "apikey": api_key
     }
+    POLLING_MAX = 2000
     @classmethod
     def generate_hash(cls) -> tuple:
         """
@@ -102,7 +103,7 @@ class MarvelAPI:
                             offset_step):
             _url = builder.update_params(url=url,
                                          param="offset",
-                                         value=f"{omnibus_offset}")
+                                         value=f"{comic_offset}")
             result_list.extend(h_json.get_json_from_url(url=_url)['data']['results'])
 
         return result_list
@@ -146,6 +147,51 @@ class MarvelAPI:
                                          value=f"{data_offset}")
             result_list.extend(h_json.get_json_from_url(url=_url)['data']['results'])
         return result_list
+
+    @classmethod
+    def get_marvel_comic_updates_since(cls, since_date:str) -> List[dict[str,Any]]:
+        """
+        _summary_
+
+        Args:
+            since_date (str): _description_
+
+        Returns:
+            List[dict[str,Any]]: _description_
+        """
+        # urlbuild, url = cls.get_base_url_urlbuild()
+        # _url = builder.update_params(url=url,param="modifiedSince",
+        #                             value=f"{since_date}")
+
+        # return h_json.get_json_from_url(url=_url)['data']['results']
+        result_list = []
+        comics_since_count = cls.get_latest_comics_count(since_date=since_date)
+        print(comics_since_count, " is the comics since count")
+        if comics_since_count == 0:
+            raise DataCountIsZero()
+        urlbuild, url = cls.get_base_url_urlbuild()
+        _url = builder.update_params(url=url,param="modifiedSince",
+                                    value=f"{since_date}")
+        offset_step = (cls.POLLING_MAX if
+                        comics_since_count >= cls.POLLING_MAX
+                        else cls.base_params['limit'])
+        # so say we are only polling a max of 2000 records at a time,
+        # which would be the polling limit.
+        # the offset is basically the record number in that data we start with.
+        # if we start with 0 as the offset,
+        # the step is going to be 100,
+        # and the end is going to be the poll limit + the start position.
+        first_comic = 0
+        last_comic = comics_since_count
+
+        for data_offset in range(first_comic,
+                            last_comic,
+                            offset_step):
+            _url = builder.update_params(url=_url,
+                                         param="offset",
+                                         value=f"{data_offset}")
+            result_list.extend(h_json.get_json_from_url(url=_url)['data']['results'])
+        return result_list
     @classmethod
     def get_omnibus_by_id(cls, id: str) -> Dict:
         if id is None:
@@ -163,7 +209,13 @@ class MarvelAPI:
         _url = builder.update_params(url=url,param="dateRange",
                                      value=f"{current_date},{get_future_date()}")
         return _url
-
+    @classmethod
+    def get_latest_comics_count(cls,since_date:str) -> int:
+        urlbuild, url = cls.get_base_url_urlbuild()
+        _url = builder.update_params(url=url,param="modifiedSince",value=f"{since_date}")
+        _url = builder.update_params(url=_url,param="limit",value="1")
+        result = h_json.get_json_from_url(url=_url)['data']['total']
+        return result
     @classmethod
     def get_omnibus_all_count(cls) -> int:
         """
@@ -216,4 +268,4 @@ class MarvelAPI:
         result_list.extend(h_json.get_json_from_url(url=_url)['data']['results'])
         return result_list
 if __name__ == "__main__":
-    print(MarvelAPI.get_base_url_urlbuild())
+    MarvelAPI.get_base_url_urlbuild()

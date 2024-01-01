@@ -1,18 +1,30 @@
-from django.db.models import base
-from django.db.models import Model
+from django.db.models import (
+    Model,
+    Max
+)
+from django.forms.models import model_to_dict
 from typing import Type,List,Dict,Any
 from json_handler import JsonHandler as h_json
 from helper_functions import (
     remove_special_characters_and_normalize,
     uniquify_list
 )
-
 from exceptions.model_helpers_exceptions import (
     ModelNotPassed,
-    ModelHasNoFields
+    ModelHasNoFields,
+    AttrNotFound
 )
-
+from date_helpers import (
+    DATEFMT
+)
 class ModelHelper:
+    @classmethod
+    def get_model_as_dict(cls,model_instance:Model) -> Dict[str,Any]:
+        if not model_instance:
+            raise
+
+        return model_to_dict(model_instance)
+
     @classmethod
     def get_model_fields(cls, model_class: Type[Model]) -> List:
         """
@@ -87,7 +99,8 @@ class ModelHelper:
     @classmethod
     def load_dict_to_model(cls, data: Dict, model_instance: Model):
         """
-        Loads data from a dictionary into a Django model instance based on mapped keys.
+        Loads data from a dictionary into a Django model
+        instance based on mapped keys.
 
         Args:
             data (Dict): The JSON data as a dictionary.
@@ -112,7 +125,45 @@ class ModelHelper:
                 setattr(model_instance, model_field, data[json_key])
 
     @classmethod
-    def save_all_results_to_model(cls, result_list:List[Dict[str,Any]],model:Model):
+    def save_all_results_to_model(cls, result_list:List[Dict[str,Any]],
+    model:Model):
         for result in result_list:
             cls.load_dict_to_model(result, model_instance=model)
             model.save()
+
+    @classmethod
+    def get_max_date(cls, date_field: str, model_class:Model) -> str:
+        """
+        Gets the maximum date for the date field specified,
+        for the model specified.
+
+        Args:
+            date_field (str): date field for the model.
+            model_class (Model): passed model.
+
+        Raises:
+            ValueError (date_field): raised if date field is not passed.
+            Exception (model_class): raised if not a model class.
+            AttributeError(date_field, model_class):raised if date_field is not
+                                                    an attribute on model.
+            ValueError (max_date): raised if max_date not found in records.
+
+        Returns:
+            str: the max date for the specified date field from the model.
+        """
+        if not date_field:
+            raise ValueError("Date value not passed.")
+        if not issubclass(model_class, Model):
+            ModelNotPassed(model_class)
+        if not hasattr(model_class, date_field):
+            raise AttributeError(
+                f"Attribute '{date_field}'not found in model {model_class}."
+            )
+        max_date_key = f"{date_field}__max"
+        max_date = model_class.objects.aggregate(Max(
+            date_field
+        )).get(max_date_key)
+
+        if max_date is None:
+            raise ValueError(f"No records found for {model_class}.")
+        return max_date.strftime(DATEFMT)
