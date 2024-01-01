@@ -15,3 +15,12 @@ class ModelHasNoFields(Exception):
     def __init__(self,model):
         message = f"Model {model} has no fields"
         super().__init__(message)
+
+class AttrNotFound(Exception):
+    """
+    raised when a django model object
+    has no fields.
+    """
+    def __init__(self,model,attr):
+        message = f"Model {model} doesn't have attribute {attr}"
+        super().__init__(message)
