@@ -6,7 +6,8 @@ class APIDBHandler:
     @classmethod
     def check_marvel_and_update_db(cls):
         max_comic_db_date = ModelHelper.get_max_date('modified',Omnibus)
-        marvel_comics_since = MarvelAPI.get_marvel_comic_updates_since(since_date=max_comic_db_date)
+        marvel_comics_since = MarvelAPI.get_marvel_comic_updates_since(
+            since_date=max_comic_db_date)
         for comic in marvel_comics_since:
             model = Omnibus()
             ModelHelper.load_dict_to_model(comic,model)
@@ -35,7 +36,8 @@ class APIDBHandler:
                     poll_limit=poll_limit))
     @classmethod
     def save_results(cls, result_set:list):
-        ModelHelper.save_all_results_to_model(result_list=result_set,model=Omnibus())
+        ModelHelper.save_all_results_to_model(
+            result_list=result_set,model=Omnibus())
 
 if __name__ == '__main__':
     APIDBHandler.check_marvel_and_update_db()
