@@ -124,6 +124,7 @@ test.py
 .env
 .env.db
 .env.marvelapi
+*.bk
 .venv
 env/
 venv/
